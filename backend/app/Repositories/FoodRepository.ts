@@ -14,7 +14,7 @@ const preloadPlace = [
 export default class FoodRepository {
   constructor() {}
 
-  public getReviewedBy(userId: number) {
+  public getReviewedBy(userId: string) {
     return Food.query()
       .whereHas('reviews', (query) => {
         query.where('user_id', userId)
@@ -24,7 +24,7 @@ export default class FoodRepository {
       .exec()
   }
 
-  public getUnreviewedBy(userId: number) {
+  public getUnreviewedBy(userId: string) {
     return Food.query()
       .whereDoesntHave('reviews', (query) => {
         query.where('user_id', userId)

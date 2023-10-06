@@ -21,8 +21,21 @@
 import Hash from '@ioc:Adonis/Core/Hash'
 import Route from '@ioc:Adonis/Core/Route'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import Drive from '@ioc:Adonis/Core/Drive'
+import crypto from 'crypto'
 
 import User from 'App/Models/User'
+import Application from '@ioc:Adonis/Core/Application'
+
+Route.post('photo', async ({ request, response }) => {
+  const photo = request.file('photo')
+
+  const fileName = await photo!.move(Application.tmpPath('uploads'))
+})
+
+Route.get('photod', async ({}) => {
+  return await Drive.delete('quarto.png')
+})
 
 Route.get('/', async () => {
   return { hello: 'world' }
@@ -74,14 +87,17 @@ Route.get('/google/callback', async ({ ally, auth, response }) => {
 
     const user = await User.firstOrCreate(
       { email: googleUser.email! },
-      { password: await Hash.make(googleUser.id) }
+      {
+        id: crypto.randomUUID(),
+        password: await Hash.make(googleUser.id),
+      }
     )
 
     const token = await auth.use('api').login(user)
 
     return response.redirect().toPath('/?token=' + token.toJSON().token)
   } catch (error) {
-    return 'Unable to authenticate. Try again later'
+    return 'Unable to authenticate. Try again later' + error.message
   }
 })
 
