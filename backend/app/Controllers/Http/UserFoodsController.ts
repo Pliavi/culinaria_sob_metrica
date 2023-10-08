@@ -1,13 +1,17 @@
-import crypto from 'crypto'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Food from 'App/Models/Food'
 import FoodRepository from 'App/Repositories/FoodRepository'
 import { match } from 'ts-pattern'
 import { schema } from '@ioc:Adonis/Core/Validator'
 import PhotoRepository from 'App/Repositories/PhotoRepository'
-import Database from '@ioc:Adonis/Lucid/Database'
+import Database, { TransactionClientContract } from '@ioc:Adonis/Lucid/Database'
 import PlaceRepository from 'App/Repositories/PlaceRepository'
 import { deletePhoto, uploadPhoto } from 'App/utils/FileUtils'
+import StoreFoodValidator from 'App/Validators/StoreFoodValidator'
+import type { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser'
+import Place from 'App/Models/Place'
+import Photo from 'App/Models/Photo'
+import User from 'App/Models/User'
 
 const foodStateEnum = ['reviewed', 'unreviewed', 'all'] as const
 type FoodState = (typeof foodStateEnum)[number]
@@ -38,57 +42,55 @@ export default class UserFoodsController {
   }
 
   // TODO: use attachment-lite to upload files directly from models
-  public async store({ request, response }: HttpContextContract) {
-    // await request.validate(StoreFoodValidator)
-    // TODO: Separar o validador de Fotos e de Lugares, sao 3 no total
-
-    const {
-      place_id: placeId,
-      place_name: placeName,
-      ...foodRequestData
-    } = request.only([
-      // food
-      'name',
-      'price',
-      // place
-      'place_name',
-      'place_id',
-    ])
-    const foodPhotoFile = request.file('photo')
-    let foodPhotoFileName: string
+  public async store({ request, response, auth }: HttpContextContract) {
+    await request.validate(StoreFoodValidator)
 
     return await Database.transaction(async (trx) => {
       try {
-        const place = await this.placeRepository.findOrCreateByName(
-          { id: placeId, name: placeName },
-          { trx }
-        )
+        const foodReqData = request.except(['place', 'photo'])
+        const placeReqData = request.input('place')
+        const foodPhotoFile = request.file('photo')
 
-        foodPhotoFileName = await uploadPhoto({ file: foodPhotoFile!, type: 'food' })
-        const foodPhoto = await this.photoRepository.create(
-          { file: foodPhotoFile!, type: 'food' },
-          { trx }
-        )
-
-        const food = await Food.create(
-          {
-            ...foodRequestData,
-            photoId: foodPhoto.id,
-            placeId: place.id,
-            userId: '6330ad47-b109-4515-9f81-a81429cdcf02',
-          },
-          { client: trx }
-        )
+        const place = await this.placeRepository.findOrCreateByName(placeReqData, { trx })
+        const foodPhoto = await this.uploadFoodPhoto(foodPhotoFile!, trx)
+        const food = await this.createFoodItem(foodReqData, place, foodPhoto, auth.user!, trx)
 
         return food
       } catch (error) {
-        console.log('rollingBack')
         await trx.rollback()
-        if (foodPhotoFileName) await deletePhoto({ fileName: foodPhotoFileName, type: 'food' })
-
         return response.badRequest({ error: error.message })
       }
     })
+  }
+
+  private async uploadFoodPhoto(file: MultipartFileContract, trx: TransactionClientContract) {
+    const fileName = await uploadPhoto({ file, type: 'food' })
+    try {
+      const photo = await this.photoRepository.create({ file, type: 'food' }, { trx })
+
+      return photo
+    } catch (error) {
+      await deletePhoto({ fileName, type: 'food' })
+      throw error
+    }
+  }
+
+  private async createFoodItem(
+    foodReqData: any,
+    place: Place,
+    photo: Photo,
+    user: User,
+    trx: TransactionClientContract
+  ) {
+    return await Food.create(
+      {
+        ...foodReqData,
+        photoId: photo.id,
+        placeId: place.id,
+        userId: user.id,
+      },
+      { client: trx }
+    )
   }
 
   public async show({ request }: HttpContextContract) {
@@ -96,6 +98,7 @@ export default class UserFoodsController {
     const food = await Food.query()
       .where('id', foodId)
       .preload('place')
+      .preload('photo')
       .preload('reviews', (query) => {
         query.preload('user')
       })
