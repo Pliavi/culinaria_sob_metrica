@@ -6,7 +6,6 @@ import { schema } from '@ioc:Adonis/Core/Validator'
 import PhotoRepository from 'App/Repositories/PhotoRepository'
 import Database, { TransactionClientContract } from '@ioc:Adonis/Lucid/Database'
 import PlaceRepository from 'App/Repositories/PlaceRepository'
-import { deletePhoto, uploadPhoto } from 'App/utils/FileUtils'
 import StoreFoodValidator from 'App/Validators/StoreFoodValidator'
 import type { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser'
 import Place from 'App/Models/Place'
@@ -41,7 +40,6 @@ export default class UserFoodsController {
     return foods
   }
 
-  // TODO: use attachment-lite to upload files directly from models
   public async store({ request, response, auth }: HttpContextContract) {
     await request.validate(StoreFoodValidator)
 
@@ -58,19 +56,20 @@ export default class UserFoodsController {
         return food
       } catch (error) {
         await trx.rollback()
+
         return response.badRequest({ error: error.message })
       }
     })
   }
 
   private async uploadFoodPhoto(file: MultipartFileContract, trx: TransactionClientContract) {
-    const fileName = await uploadPhoto({ file, type: 'food' })
+    // const fileName = await uploadPhoto({ file, type: 'food' })
     try {
       const photo = await this.photoRepository.create({ file, type: 'food' }, { trx })
 
       return photo
     } catch (error) {
-      await deletePhoto({ fileName, type: 'food' })
+      // await deletePhoto({ fileName, type: 'food' })
       throw error
     }
   }
