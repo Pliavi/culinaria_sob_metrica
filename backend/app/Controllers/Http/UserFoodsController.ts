@@ -1,25 +1,18 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Food from 'App/Models/Food'
-import FoodRepository from 'App/Repositories/FoodRepository'
 import { match } from 'ts-pattern'
 import { schema } from '@ioc:Adonis/Core/Validator'
-import PhotoRepository from 'App/Repositories/PhotoRepository'
-import Database, { TransactionClientContract } from '@ioc:Adonis/Lucid/Database'
-import PlaceRepository from 'App/Repositories/PlaceRepository'
+import Database from '@ioc:Adonis/Lucid/Database'
 import StoreFoodValidator from 'App/Validators/StoreFoodValidator'
-import type { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser'
-import Place from 'App/Models/Place'
-import Photo from 'App/Models/Photo'
-import User from 'App/Models/User'
+import { inject } from '@adonisjs/core/build/standalone'
+import { AttachmentService } from '@ioc:CSM/Services'
+import { FoodRepository, PhotoRepository, PlaceRepository } from '@ioc:CSM/Repositories'
 
 const foodStateEnum = ['reviewed', 'unreviewed', 'all'] as const
 type FoodState = (typeof foodStateEnum)[number]
 
+@inject()
 export default class UserFoodsController {
-  private foodRepository = new FoodRepository()
-  private photoRepository = new PhotoRepository()
-  private placeRepository = new PlaceRepository()
-
   public async index({ request, auth }: HttpContextContract) {
     await request.validate({
       schema: schema.create({
@@ -27,69 +20,45 @@ export default class UserFoodsController {
       }),
     })
 
-    const repo = this.foodRepository
     const userId = auth.user?.id
     const foodState: FoodState = request.input('state')
 
     const foods = match(foodState)
-      .with('reviewed', () => repo.getReviewedBy(userId!))
-      .with('unreviewed', () => repo.getUnreviewedBy(userId!))
-      .with('all', () => repo.getAll())
+      .with('reviewed', () => FoodRepository.getReviewedBy(userId!))
+      .with('unreviewed', () => FoodRepository.getUnreviewedBy(userId!))
+      .with('all', () => FoodRepository.getAll())
       .exhaustive()
 
     return foods
   }
 
-  public async store({ request, response, auth }: HttpContextContract) {
+  public async store({ request, auth }: HttpContextContract) {
     await request.validate(StoreFoodValidator)
+
+    const user = auth.user!
+
+    let photoPath: string | undefined
 
     return await Database.transaction(async (trx) => {
       try {
-        const foodReqData = request.except(['place', 'photo'])
-        const placeReqData = request.input('place')
-        const foodPhotoFile = request.file('photo')
+        const foodData = request.except(['place', 'photo'])
+        const placeData = request.input('place')
+        const photoFile = request.file('photo')!
 
-        const place = await this.placeRepository.findOrCreateByName(placeReqData, { trx })
-        const foodPhoto = await this.uploadFoodPhoto(foodPhotoFile!, trx)
-        const food = await this.createFoodItem(foodReqData, place, foodPhoto, auth.user!, trx)
+        photoPath = await AttachmentService.upload(photoFile)
+        const photo = await PhotoRepository.create(photoPath, { trx })
+        const place = await PlaceRepository.findOrCreateByName(placeData, { trx })
+        const food = await FoodRepository.create({ data: foodData, place, photo, user }, { trx })
 
         return food
       } catch (error) {
-        await trx.rollback()
+        if (photoPath) {
+          await AttachmentService.delete(photoPath)
+        }
 
-        return response.badRequest({ error: error.message })
+        throw error
       }
     })
-  }
-
-  private async uploadFoodPhoto(file: MultipartFileContract, trx: TransactionClientContract) {
-    // const fileName = await uploadPhoto({ file, type: 'food' })
-    try {
-      const photo = await this.photoRepository.create({ file, type: 'food' }, { trx })
-
-      return photo
-    } catch (error) {
-      // await deletePhoto({ fileName, type: 'food' })
-      throw error
-    }
-  }
-
-  private async createFoodItem(
-    foodReqData: any,
-    place: Place,
-    photo: Photo,
-    user: User,
-    trx: TransactionClientContract
-  ) {
-    return await Food.create(
-      {
-        ...foodReqData,
-        photoId: photo.id,
-        placeId: place.id,
-        userId: user.id,
-      },
-      { client: trx }
-    )
   }
 
   public async show({ request }: HttpContextContract) {
