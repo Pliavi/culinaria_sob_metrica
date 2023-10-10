@@ -32,7 +32,7 @@ export default class Review extends BaseModel {
   public photos: ManyToMany<typeof Photo>
 
   @column({ serializeAs: null })
-  public userId: string
+  public userId: number
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
 

@@ -1,6 +1,9 @@
 import { LucidModel, RelationQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
 import Food from 'App/Models/Food'
 import Place from 'App/Models/Place'
+import { RepoCreateOptions } from './Repository.types'
+import User from 'App/Models/User'
+import Photo from 'App/Models/Photo'
 
 type PreloadQuery<T extends LucidModel> = RelationQueryBuilderContract<T, any>
 
@@ -11,10 +14,29 @@ const preloadPlace = [
   },
 ] as const
 
+interface CreateParams {
+  data: any
+  place: Place
+  photo: Photo
+  user: User
+}
+
 export default class FoodRepository {
   constructor() {}
 
-  public getReviewedBy(userId: string) {
+  public create({ data, place, photo, user }: CreateParams, { trx }: RepoCreateOptions) {
+    return Food.create(
+      {
+        ...data,
+        placeId: place.id,
+        photoId: photo.id,
+        userId: user.id,
+      },
+      { client: trx }
+    )
+  }
+
+  public getReviewedBy(userId: number) {
     return Food.query()
       .whereHas('reviews', (query) => {
         query.where('user_id', userId)
@@ -24,7 +46,7 @@ export default class FoodRepository {
       .exec()
   }
 
-  public getUnreviewedBy(userId: string) {
+  public getUnreviewedBy(userId: number) {
     return Food.query()
       .whereDoesntHave('reviews', (query) => {
         query.where('user_id', userId)

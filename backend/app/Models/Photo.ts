@@ -4,7 +4,7 @@ import crypto from 'crypto'
 
 export default class Photo extends BaseModel {
   @column({ isPrimary: true })
-  public id: string
+  public id: number
 
   @column()
   public url: string
@@ -14,9 +14,4 @@ export default class Photo extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
-
-  @beforeSave()
-  public static setUUID(photo: Photo) {
-    photo.id = crypto.randomUUID()
-  }
 }

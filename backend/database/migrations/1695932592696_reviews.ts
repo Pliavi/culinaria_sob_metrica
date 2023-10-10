@@ -5,15 +5,15 @@ export default class extends BaseSchema {
 
   public async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.uuid('id').primary()
+      table.increments('id').primary()
 
       table.string('title', 255).nullable()
       table.text('comment').nullable()
       table.double('rating').checkBetween([0, 5], 'rating_range').notNullable()
       table.integer('likes').defaultTo(0).notNullable()
 
-      table.uuid('user_id').references('id').inTable('users').onDelete('CASCADE')
-      table.uuid('food_id').references('id').inTable('foods').onDelete('CASCADE')
+      table.integer('user_id').references('id').inTable('users').onDelete('CASCADE')
+      table.integer('food_id').references('id').inTable('foods').onDelete('CASCADE')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

@@ -15,7 +15,7 @@ import User from './User'
 import crypto from 'crypto'
 export default class Food extends BaseModel {
   @column({ isPrimary: true })
-  public id: string
+  public id: number
 
   @column()
   public name: string
@@ -24,7 +24,7 @@ export default class Food extends BaseModel {
   public price: string
 
   @column({ serializeAs: null })
-  public userId: string
+  public userId: number
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
 
@@ -46,9 +46,4 @@ export default class Food extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
-
-  @beforeSave()
-  public static setUUID(food: Food) {
-    food.id = crypto.randomUUID()
-  }
 }

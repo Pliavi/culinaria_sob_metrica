@@ -1,16 +1,17 @@
 import Place from 'App/Models/Place'
-import { match } from 'ts-pattern'
-import isUUID from 'is-uuid'
-import { PlaceRepositoryInterface } from './PlaceRepository.interface'
+import { P, match } from 'ts-pattern'
 
-export default class PlaceRepository implements PlaceRepositoryInterface {
-  public async findOrCreateByName({ id, name }, { trx }) {
+import { FindOrCreatePlaceByNameParams } from './PlaceRepository.interface'
+import { RepoCreateOptions } from './Repository.types'
+
+export default class PlaceRepository {
+  public async findOrCreateByName(
+    { id, name }: FindOrCreatePlaceByNameParams,
+    { trx }: RepoCreateOptions
+  ) {
     const place = await match(id)
-      .when(isUUID.anyNonNil, () => Place.findOrFail(id, { client: trx }))
-      .otherwise(() => {
-        console.log('Creating place with name: ' + name)
-        return Place.create({ name }, { client: trx })
-      })
+      .with(P.number, () => Place.findOrFail(id, { client: trx }))
+      .otherwise(() => Place.create({ name }, { client: trx }))
 
     return place
   }

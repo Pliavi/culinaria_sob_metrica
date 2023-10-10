@@ -7,7 +7,7 @@ import Food from './Food'
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
-  public id: string
+  public id: number
 
   @column()
   public name: string

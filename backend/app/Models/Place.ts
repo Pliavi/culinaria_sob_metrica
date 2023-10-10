@@ -15,7 +15,7 @@ import crypto from 'crypto'
 
 export default class Place extends BaseModel {
   @column({ isPrimary: true })
-  public id: string
+  public id: number
 
   @column()
   public name: string
@@ -50,7 +50,7 @@ export default class Place extends BaseModel {
   public photo: BelongsTo<typeof Photo>
 
   @column({ serializeAs: null })
-  public userId: string
+  public userId: number
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
 
@@ -62,9 +62,4 @@ export default class Place extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
-
-  @beforeSave()
-  public static async setUUID(place: Place) {
-    place.id = crypto.randomUUID()
-  }
 }
