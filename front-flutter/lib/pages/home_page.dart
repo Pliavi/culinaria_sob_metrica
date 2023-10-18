@@ -1,6 +1,5 @@
 import 'package:csm_front/models/food_model.dart';
 import 'package:csm_front/stores/foods_store.dart';
-import 'package:csm_front/widgets/food_list_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 
@@ -39,8 +38,18 @@ class _HomePageState extends State<HomePage> {
         onError: (context, error) => Text(error),
         onState: (context, foods) => ListView.separated(
           padding: const EdgeInsets.all(16.0),
-          itemBuilder: (context, index) => FoodListTile(food: foods[index]),
-          separatorBuilder: (context, index) => const SizedBox(height: 16.0),
+          itemBuilder: (context, index) {
+            final food = foods[index];
+
+            return ListTile(
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(food.photo?.url ?? ""),
+              ),
+              title: Text(food.name),
+              subtitle: Text("R\$ ${food.price}"),
+            );
+          },
+          separatorBuilder: (context, index) => const Divider(),
           itemCount: foods.length,
         ),
       ),

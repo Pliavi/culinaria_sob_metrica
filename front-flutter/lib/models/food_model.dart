@@ -1,3 +1,4 @@
+import 'package:csm_front/models/photo_model.dart';
 import 'package:csm_front/models/place_model.dart';
 import 'package:csm_front/models/review_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -10,8 +11,8 @@ class FoodModel with _$FoodModel {
   const factory FoodModel({
     int? id,
     required String name,
-    required String image,
-    required String price,
+    String? price,
+    PhotoModel? photo,
     PlaceModel? place,
     List<ReviewModel>? reviews,
   }) = _FoodModel;

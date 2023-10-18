@@ -10,8 +10,10 @@ _$FoodModelImpl _$$FoodModelImplFromJson(Map<String, dynamic> json) =>
     _$FoodModelImpl(
       id: json['id'] as int?,
       name: json['name'] as String,
-      image: json['image'] as String,
-      price: json['price'] as String,
+      price: json['price'] as String?,
+      photo: json['photo'] == null
+          ? null
+          : PhotoModel.fromJson(json['photo'] as Map<String, dynamic>),
       place: json['place'] == null
           ? null
           : PlaceModel.fromJson(json['place'] as Map<String, dynamic>),
@@ -24,8 +26,8 @@ Map<String, dynamic> _$$FoodModelImplToJson(_$FoodModelImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
-      'image': instance.image,
       'price': instance.price,
+      'photo': instance.photo,
       'place': instance.place,
       'reviews': instance.reviews,
     };

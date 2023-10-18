@@ -1,5 +1,7 @@
 import 'package:csm_front/models/food_model.dart';
-import 'package:csm_front/stores/food_store.dart';
+import 'package:csm_front/services/food_service/food_service.dart';
+import 'package:csm_front/stores/states/food_store.dart';
+import 'package:csm_front/widgets/fetch_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
 
@@ -36,8 +38,8 @@ class _FoodPageState extends State<FoodPage> {
         backgroundColor: Colors.orange,
         foregroundColor: Colors.white,
       ),
-      body: ScopedBuilder<FoodStore, FoodModel?>(
-        store: store,
+      body: FetchBuilder(
+        fetcher: FoodService().getFood(id: widget.foodId!),
         onLoading: (context) => const Center(
           child: CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
@@ -93,7 +95,7 @@ class _FoodPageState extends State<FoodPage> {
                               borderRadius: BorderRadius.circular(8.0),
                               clipBehavior: Clip.antiAlias,
                               child: Image.network(
-                                food.image,
+                                food.photo?.url ?? "",
                                 width: 100,
                                 height: 100,
                                 fit: BoxFit.cover,
@@ -104,7 +106,7 @@ class _FoodPageState extends State<FoodPage> {
                               borderRadius: BorderRadius.circular(8.0),
                               clipBehavior: Clip.antiAlias,
                               child: Image.network(
-                                food.image,
+                                food.photo?.url ?? "",
                                 width: 100,
                                 height: 100,
                                 fit: BoxFit.cover,
@@ -115,7 +117,7 @@ class _FoodPageState extends State<FoodPage> {
                               borderRadius: BorderRadius.circular(8.0),
                               clipBehavior: Clip.antiAlias,
                               child: Image.network(
-                                food.image,
+                                food.photo?.url ?? "",
                                 width: 100,
                                 height: 100,
                                 fit: BoxFit.cover,
@@ -168,6 +170,6 @@ class _FoodPageState extends State<FoodPage> {
           );
         },
       ),
-    );
+    )
   }
 }

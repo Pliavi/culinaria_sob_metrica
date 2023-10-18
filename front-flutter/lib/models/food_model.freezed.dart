@@ -22,8 +22,8 @@ FoodModel _$FoodModelFromJson(Map<String, dynamic> json) {
 mixin _$FoodModel {
   int? get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
-  String get image => throw _privateConstructorUsedError;
-  String get price => throw _privateConstructorUsedError;
+  String? get price => throw _privateConstructorUsedError;
+  PhotoModel? get photo => throw _privateConstructorUsedError;
   PlaceModel? get place => throw _privateConstructorUsedError;
   List<ReviewModel>? get reviews => throw _privateConstructorUsedError;
 
@@ -41,11 +41,12 @@ abstract class $FoodModelCopyWith<$Res> {
   $Res call(
       {int? id,
       String name,
-      String image,
-      String price,
+      String? price,
+      PhotoModel? photo,
       PlaceModel? place,
       List<ReviewModel>? reviews});
 
+  $PhotoModelCopyWith<$Res>? get photo;
   $PlaceModelCopyWith<$Res>? get place;
 }
 
@@ -64,8 +65,8 @@ class _$FoodModelCopyWithImpl<$Res, $Val extends FoodModel>
   $Res call({
     Object? id = freezed,
     Object? name = null,
-    Object? image = null,
-    Object? price = null,
+    Object? price = freezed,
+    Object? photo = freezed,
     Object? place = freezed,
     Object? reviews = freezed,
   }) {
@@ -78,14 +79,14 @@ class _$FoodModelCopyWithImpl<$Res, $Val extends FoodModel>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      image: null == image
-          ? _value.image
-          : image // ignore: cast_nullable_to_non_nullable
-              as String,
-      price: null == price
+      price: freezed == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
+      photo: freezed == photo
+          ? _value.photo
+          : photo // ignore: cast_nullable_to_non_nullable
+              as PhotoModel?,
       place: freezed == place
           ? _value.place
           : place // ignore: cast_nullable_to_non_nullable
@@ -95,6 +96,18 @@ class _$FoodModelCopyWithImpl<$Res, $Val extends FoodModel>
           : reviews // ignore: cast_nullable_to_non_nullable
               as List<ReviewModel>?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $PhotoModelCopyWith<$Res>? get photo {
+    if (_value.photo == null) {
+      return null;
+    }
+
+    return $PhotoModelCopyWith<$Res>(_value.photo!, (value) {
+      return _then(_value.copyWith(photo: value) as $Val);
+    });
   }
 
   @override
@@ -121,11 +134,13 @@ abstract class _$$FoodModelImplCopyWith<$Res>
   $Res call(
       {int? id,
       String name,
-      String image,
-      String price,
+      String? price,
+      PhotoModel? photo,
       PlaceModel? place,
       List<ReviewModel>? reviews});
 
+  @override
+  $PhotoModelCopyWith<$Res>? get photo;
   @override
   $PlaceModelCopyWith<$Res>? get place;
 }
@@ -143,8 +158,8 @@ class __$$FoodModelImplCopyWithImpl<$Res>
   $Res call({
     Object? id = freezed,
     Object? name = null,
-    Object? image = null,
-    Object? price = null,
+    Object? price = freezed,
+    Object? photo = freezed,
     Object? place = freezed,
     Object? reviews = freezed,
   }) {
@@ -157,14 +172,14 @@ class __$$FoodModelImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      image: null == image
-          ? _value.image
-          : image // ignore: cast_nullable_to_non_nullable
-              as String,
-      price: null == price
+      price: freezed == price
           ? _value.price
           : price // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
+      photo: freezed == photo
+          ? _value.photo
+          : photo // ignore: cast_nullable_to_non_nullable
+              as PhotoModel?,
       place: freezed == place
           ? _value.place
           : place // ignore: cast_nullable_to_non_nullable
@@ -183,8 +198,8 @@ class _$FoodModelImpl implements _FoodModel {
   const _$FoodModelImpl(
       {this.id,
       required this.name,
-      required this.image,
-      required this.price,
+      this.price,
+      this.photo,
       this.place,
       final List<ReviewModel>? reviews})
       : _reviews = reviews;
@@ -197,9 +212,9 @@ class _$FoodModelImpl implements _FoodModel {
   @override
   final String name;
   @override
-  final String image;
+  final String? price;
   @override
-  final String price;
+  final PhotoModel? photo;
   @override
   final PlaceModel? place;
   final List<ReviewModel>? _reviews;
@@ -214,7 +229,7 @@ class _$FoodModelImpl implements _FoodModel {
 
   @override
   String toString() {
-    return 'FoodModel(id: $id, name: $name, image: $image, price: $price, place: $place, reviews: $reviews)';
+    return 'FoodModel(id: $id, name: $name, price: $price, photo: $photo, place: $place, reviews: $reviews)';
   }
 
   @override
@@ -224,15 +239,15 @@ class _$FoodModelImpl implements _FoodModel {
             other is _$FoodModelImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.image, image) || other.image == image) &&
             (identical(other.price, price) || other.price == price) &&
+            (identical(other.photo, photo) || other.photo == photo) &&
             (identical(other.place, place) || other.place == place) &&
             const DeepCollectionEquality().equals(other._reviews, _reviews));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, image, price, place,
+  int get hashCode => Object.hash(runtimeType, id, name, price, photo, place,
       const DeepCollectionEquality().hash(_reviews));
 
   @JsonKey(ignore: true)
@@ -253,8 +268,8 @@ abstract class _FoodModel implements FoodModel {
   const factory _FoodModel(
       {final int? id,
       required final String name,
-      required final String image,
-      required final String price,
+      final String? price,
+      final PhotoModel? photo,
       final PlaceModel? place,
       final List<ReviewModel>? reviews}) = _$FoodModelImpl;
 
@@ -266,9 +281,9 @@ abstract class _FoodModel implements FoodModel {
   @override
   String get name;
   @override
-  String get image;
+  String? get price;
   @override
-  String get price;
+  PhotoModel? get photo;
   @override
   PlaceModel? get place;
   @override
