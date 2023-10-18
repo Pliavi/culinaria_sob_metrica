@@ -1,5 +1,5 @@
 import Photo from 'App/Models/Photo'
-import { RepoCreateOptions } from './Repository.types'
+import { RepoCreateOptions } from '../../types/Repository.types'
 
 export default class PhotoRepository {
   constructor() {}

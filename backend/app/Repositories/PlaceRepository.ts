@@ -1,18 +1,17 @@
 import Place from 'App/Models/Place'
-import { P, match } from 'ts-pattern'
 
-import { FindOrCreatePlaceByNameParams } from './PlaceRepository.interface'
-import { RepoCreateOptions } from './Repository.types'
+import { RepoCreateOptions } from '../../types/Repository.types'
+
+interface FindOrCreatePlaceByNameParams {
+  id: number
+  name: string
+}
 
 export default class PlaceRepository {
-  public async findOrCreateByName(
+  public async firstOrCreateByName(
     { id, name }: FindOrCreatePlaceByNameParams,
     { trx }: RepoCreateOptions
   ) {
-    const place = await match(id)
-      .with(P.number, () => Place.findOrFail(id, { client: trx }))
-      .otherwise(() => Place.create({ name }, { client: trx }))
-
-    return place
+    return await Place.firstOrCreate({ id }, { name }, { client: trx })
   }
 }

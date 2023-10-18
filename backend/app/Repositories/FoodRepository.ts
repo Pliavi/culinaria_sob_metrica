@@ -1,7 +1,7 @@
 import { LucidModel, RelationQueryBuilderContract } from '@ioc:Adonis/Lucid/Orm'
 import Food from 'App/Models/Food'
 import Place from 'App/Models/Place'
-import { RepoCreateOptions } from './Repository.types'
+import { RepoCreateOptions } from '../../types/Repository.types'
 import User from 'App/Models/User'
 import Photo from 'App/Models/Photo'
 
@@ -24,8 +24,17 @@ interface CreateParams {
 export default class FoodRepository {
   constructor() {}
 
-  public create({ data, place, photo, user }: CreateParams, { trx }: RepoCreateOptions) {
-    return Food.create(
+  public async create({ data, place, photo, user }: CreateParams, { trx }: RepoCreateOptions) {
+    await Food.create(
+      Object.assign<Food, Partial<Food>>(data, {
+        placeId: place.id,
+        photoId: photo.id,
+        userId: user.id,
+      }),
+      { client: trx }
+    )
+
+    return await Food.create(
       {
         ...data,
         placeId: place.id,

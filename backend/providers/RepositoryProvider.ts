@@ -26,26 +26,22 @@ export default class RepositoryProvider {
 
   public register() {
     const repositoriesDir = 'app/Repositories'
-
     const repoPath = path.join(__dirname, '..', repositoriesDir)
     const repositoryFiles = fs.readdirSync(repoPath)
-
-    repositoryFiles.forEach((file) => {
+    const repos = repositoryFiles.reduce((acc: Record<string, any>, file: string) => {
       if (file.endsWith('.ts')) {
         const repositoryName = path.basename(file, '.ts')
         const repositoryPath = `${repositoriesDir}/${repositoryName}`
-        const repositoryNamespace = `CSM/Repositories/${repositoryName}`
-
-        this.app.container.singleton(repositoryNamespace, () => {
-          return new (require(`../${repositoryPath}`).default)()
-        })
+        const repo = new (require(`../${repositoryPath}`).default)()
+        acc[repositoryName] = repo
       }
+      return acc
+    }, {})
+    this.app.container.singleton('CSM/Repositories', () => {
+      return repos
     })
   }
-  public async boot() {
-    // All bindings are ready, feel free to use them
-    this.app.container.use('CSM/Repositories/FoodRepository')
-  }
+  public async boot() {}
 
   public async ready() {
     // App is ready

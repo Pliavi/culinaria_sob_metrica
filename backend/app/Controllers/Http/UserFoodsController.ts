@@ -47,7 +47,7 @@ export default class UserFoodsController {
 
         photoPath = await AttachmentService.upload(photoFile)
         const photo = await PhotoRepository.create(photoPath, { trx })
-        const place = await PlaceRepository.findOrCreateByName(placeData, { trx })
+        const place = await PlaceRepository.firstOrCreateByName(placeData, { trx })
         const food = await FoodRepository.create({ data: foodData, place, photo, user }, { trx })
 
         return food
