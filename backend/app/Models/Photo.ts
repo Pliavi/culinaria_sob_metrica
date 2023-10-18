@@ -1,6 +1,5 @@
 import { DateTime } from 'luxon'
-import { BaseModel, beforeSave, column } from '@ioc:Adonis/Lucid/Orm'
-import crypto from 'crypto'
+import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Photo extends BaseModel {
   @column({ isPrimary: true })

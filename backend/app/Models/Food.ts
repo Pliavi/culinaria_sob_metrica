@@ -1,18 +1,10 @@
 import { DateTime } from 'luxon'
-import {
-  BaseModel,
-  BelongsTo,
-  HasMany,
-  beforeSave,
-  belongsTo,
-  column,
-  hasMany,
-} from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, HasMany, belongsTo, column, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import Place from './Place'
 import Review from './Review'
 import Photo from './Photo'
 import User from './User'
-import crypto from 'crypto'
+
 export default class Food extends BaseModel {
   @column({ isPrimary: true })
   public id: number
@@ -29,12 +21,12 @@ export default class Food extends BaseModel {
   public user: BelongsTo<typeof User>
 
   @column({ serializeAs: null })
-  public photoId: string
+  public photoId: number
   @belongsTo(() => Photo)
   public photo: BelongsTo<typeof Photo>
 
   @column({ serializeAs: null })
-  public placeId: string
+  public placeId: number
   @belongsTo(() => Place)
   public place: BelongsTo<typeof Place>
 
