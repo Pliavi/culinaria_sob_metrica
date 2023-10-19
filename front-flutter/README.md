@@ -2,15 +2,28 @@
 
 A new Flutter project.
 
-## Getting Started
+# Architecture
 
-This project is a starting point for a Flutter application.
+I would like to use kinda of a simple clean architecture.
+I will use MVVM as a presentation layer, and I will use a service pattern to abstract the data layer.
+I will not use usecases
+My folder structure will be like this:
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```
+lib
+├───core
+│   ├───constants
+│   └───routes
+├───data
+│   ├───datasources
+│   ├───models
+│   └───services
+├───ui
+│   ├───widgets
+│   ├───pages
+│   │   └───[pagename]
+│   │       ├───[pagename]_controller.dart
+│   │       └───[pagename]_view.dart
+│   └───themes
+└───utils
+```

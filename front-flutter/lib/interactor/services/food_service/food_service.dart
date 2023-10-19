@@ -1,24 +1,24 @@
-import 'package:csm_front/models/food_model.dart';
-import 'package:csm_front/services/api_instance.dart';
-import 'package:csm_front/services/food_service/food_service_exceptions.dart';
-import 'package:csm_front/services/food_service/food_service_types.part.dart';
+import 'package:csm_front/data/datasources/api_instance.dart';
+import 'package:csm_front/data/models/food_model.dart';
+import 'package:csm_front/interactor/services/food_service/food_service_exceptions.dart';
+import 'package:csm_front/interactor/services/food_service/food_service_types.part.dart';
 import 'package:result_dart/result_dart.dart';
 
-class FoodService {
-  AsyncFoodListResult listFoods({required String state}) async {
-    assert(state == "all" || state == "reviewed" || state == "unreviewed");
+enum FoodListState { all, reviewed, unreviewed }
 
+class FoodService {
+  AsyncFoodListResult listFoods({required FoodListState state}) async {
     try {
       final res = await api.get(
         "foods",
-        queryParameters: {"state": state},
+        queryParameters: {"state": state.name},
       );
 
       final foods = res.data!
-          .map((data) => FoodModel.fromJson(data))
+          .map<FoodModel>((data) => FoodModel.fromJson(data))
           .toList(growable: false);
 
-      return foods.toSuccess();
+      return Success(foods);
     } on Exception catch (e) {
       return FoodServiceException(
         e,

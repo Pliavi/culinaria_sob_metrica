@@ -1,6 +1,6 @@
-import 'package:csm_front/models/photo_model.dart';
-import 'package:csm_front/models/place_model.dart';
-import 'package:csm_front/models/review_model.dart';
+import 'package:csm_front/data/models/photo_model.dart';
+import 'package:csm_front/data/models/place_model.dart';
+import 'package:csm_front/data/models/review_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'food_model.freezed.dart';
