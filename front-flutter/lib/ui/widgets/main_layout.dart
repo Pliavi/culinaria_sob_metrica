@@ -9,22 +9,5 @@ class MainLayout extends Scaffold {
   }) : super(
           appBar: MyAppbar(),
           extendBody: true,
-          bottomNavigationBar: BottomNavigationBar(
-            onTap: (value) => print(value),
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: "Home",
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: "Home",
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: "Home",
-              ),
-            ],
-          ),
         );
 }
