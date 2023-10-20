@@ -28,7 +28,7 @@ class HomePage extends StatelessWidget {
                   onPressed: () {
                     context.read<LoginPageCubit>().logout();
                   },
-                  child: const Text("Logout"),
+                  child: const Text("Sair"),
                 ),
                 Expanded(
                   child: ListView.builder(

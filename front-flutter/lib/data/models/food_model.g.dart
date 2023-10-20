@@ -17,6 +17,9 @@ _$FoodModelImpl _$$FoodModelImplFromJson(Map<String, dynamic> json) =>
       place: json['place'] == null
           ? null
           : PlaceModel.fromJson(json['place'] as Map<String, dynamic>),
+      user: json['user'] == null
+          ? null
+          : UserModel.fromJson(json['user'] as Map<String, dynamic>),
       reviews: (json['reviews'] as List<dynamic>?)
           ?.map((e) => ReviewModel.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -29,5 +32,6 @@ Map<String, dynamic> _$$FoodModelImplToJson(_$FoodModelImpl instance) =>
       'price': instance.price,
       'photo': instance.photo,
       'place': instance.place,
+      'user': instance.user,
       'reviews': instance.reviews,
     };

@@ -25,6 +25,7 @@ mixin _$FoodModel {
   String? get price => throw _privateConstructorUsedError;
   PhotoModel? get photo => throw _privateConstructorUsedError;
   PlaceModel? get place => throw _privateConstructorUsedError;
+  UserModel? get user => throw _privateConstructorUsedError;
   List<ReviewModel>? get reviews => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -44,10 +45,12 @@ abstract class $FoodModelCopyWith<$Res> {
       String? price,
       PhotoModel? photo,
       PlaceModel? place,
+      UserModel? user,
       List<ReviewModel>? reviews});
 
   $PhotoModelCopyWith<$Res>? get photo;
   $PlaceModelCopyWith<$Res>? get place;
+  $UserModelCopyWith<$Res>? get user;
 }
 
 /// @nodoc
@@ -68,6 +71,7 @@ class _$FoodModelCopyWithImpl<$Res, $Val extends FoodModel>
     Object? price = freezed,
     Object? photo = freezed,
     Object? place = freezed,
+    Object? user = freezed,
     Object? reviews = freezed,
   }) {
     return _then(_value.copyWith(
@@ -91,6 +95,10 @@ class _$FoodModelCopyWithImpl<$Res, $Val extends FoodModel>
           ? _value.place
           : place // ignore: cast_nullable_to_non_nullable
               as PlaceModel?,
+      user: freezed == user
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as UserModel?,
       reviews: freezed == reviews
           ? _value.reviews
           : reviews // ignore: cast_nullable_to_non_nullable
@@ -121,6 +129,18 @@ class _$FoodModelCopyWithImpl<$Res, $Val extends FoodModel>
       return _then(_value.copyWith(place: value) as $Val);
     });
   }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $UserModelCopyWith<$Res>? get user {
+    if (_value.user == null) {
+      return null;
+    }
+
+    return $UserModelCopyWith<$Res>(_value.user!, (value) {
+      return _then(_value.copyWith(user: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -137,12 +157,15 @@ abstract class _$$FoodModelImplCopyWith<$Res>
       String? price,
       PhotoModel? photo,
       PlaceModel? place,
+      UserModel? user,
       List<ReviewModel>? reviews});
 
   @override
   $PhotoModelCopyWith<$Res>? get photo;
   @override
   $PlaceModelCopyWith<$Res>? get place;
+  @override
+  $UserModelCopyWith<$Res>? get user;
 }
 
 /// @nodoc
@@ -161,6 +184,7 @@ class __$$FoodModelImplCopyWithImpl<$Res>
     Object? price = freezed,
     Object? photo = freezed,
     Object? place = freezed,
+    Object? user = freezed,
     Object? reviews = freezed,
   }) {
     return _then(_$FoodModelImpl(
@@ -184,6 +208,10 @@ class __$$FoodModelImplCopyWithImpl<$Res>
           ? _value.place
           : place // ignore: cast_nullable_to_non_nullable
               as PlaceModel?,
+      user: freezed == user
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as UserModel?,
       reviews: freezed == reviews
           ? _value._reviews
           : reviews // ignore: cast_nullable_to_non_nullable
@@ -201,6 +229,7 @@ class _$FoodModelImpl implements _FoodModel {
       this.price,
       this.photo,
       this.place,
+      this.user,
       final List<ReviewModel>? reviews})
       : _reviews = reviews;
 
@@ -217,6 +246,8 @@ class _$FoodModelImpl implements _FoodModel {
   final PhotoModel? photo;
   @override
   final PlaceModel? place;
+  @override
+  final UserModel? user;
   final List<ReviewModel>? _reviews;
   @override
   List<ReviewModel>? get reviews {
@@ -229,7 +260,7 @@ class _$FoodModelImpl implements _FoodModel {
 
   @override
   String toString() {
-    return 'FoodModel(id: $id, name: $name, price: $price, photo: $photo, place: $place, reviews: $reviews)';
+    return 'FoodModel(id: $id, name: $name, price: $price, photo: $photo, place: $place, user: $user, reviews: $reviews)';
   }
 
   @override
@@ -242,13 +273,14 @@ class _$FoodModelImpl implements _FoodModel {
             (identical(other.price, price) || other.price == price) &&
             (identical(other.photo, photo) || other.photo == photo) &&
             (identical(other.place, place) || other.place == place) &&
+            (identical(other.user, user) || other.user == user) &&
             const DeepCollectionEquality().equals(other._reviews, _reviews));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, name, price, photo, place,
-      const DeepCollectionEquality().hash(_reviews));
+      user, const DeepCollectionEquality().hash(_reviews));
 
   @JsonKey(ignore: true)
   @override
@@ -271,6 +303,7 @@ abstract class _FoodModel implements FoodModel {
       final String? price,
       final PhotoModel? photo,
       final PlaceModel? place,
+      final UserModel? user,
       final List<ReviewModel>? reviews}) = _$FoodModelImpl;
 
   factory _FoodModel.fromJson(Map<String, dynamic> json) =
@@ -286,6 +319,8 @@ abstract class _FoodModel implements FoodModel {
   PhotoModel? get photo;
   @override
   PlaceModel? get place;
+  @override
+  UserModel? get user;
   @override
   List<ReviewModel>? get reviews;
   @override

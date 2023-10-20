@@ -24,7 +24,9 @@ class LoginService {
 
       final token = response.data['token'];
       api.options.headers["Authorization"] = "Bearer $token";
-      const user = UserModel(email: "fake@fake.com");
+
+      // TODO: remove this fake user
+      const user = UserModel(name: "Fake", email: "fake@fake.com");
 
       return user.toSuccess();
     } on Exception catch (e) {

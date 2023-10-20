@@ -6,7 +6,7 @@ class MyAppbar extends AppBar {
     List<Widget>? actions,
   }) : super(
           elevation: 2,
-          backgroundColor: const Color(0xff9a522c),
+          backgroundColor: const Color.fromARGB(255, 100, 88, 81),
           foregroundColor: const Color(0xffefd7b7),
           toolbarHeight: 72,
           title: const Column(
@@ -28,9 +28,9 @@ class MyAppbar extends AppBar {
               ),
             )
           ],
-          leading: IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.menu),
-          ),
+          // leading: IconButton(
+          //   onPressed: () {},
+          //   icon: const Icon(Icons.menu),
+          // ),
         );
 }

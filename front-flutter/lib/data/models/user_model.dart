@@ -5,7 +5,12 @@ part 'user_model.g.dart';
 
 @freezed
 class UserModel with _$UserModel {
+  get nameOrEmail => name ?? email;
+
+  const UserModel._();
+
   const factory UserModel({
+    String? name,
     required String email,
   }) = _UserModel;
 

@@ -22,7 +22,7 @@ class FoodListTile extends StatelessWidget {
         );
       },
       child: ListTile(
-        title: Text(food.name),
+        title: Text("${food.id} - ${food.name}"),
         subtitle: Text(food.place?.name ?? "No place"),
         leading: CircleAvatar(
           backgroundImage:
