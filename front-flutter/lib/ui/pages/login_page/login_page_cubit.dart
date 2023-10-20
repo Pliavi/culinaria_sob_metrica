@@ -44,4 +44,18 @@ class LoginPageCubit extends Cubit<LoginPageState> with StringValidatorsMixin {
       (error) => emit(LoginPageErrorState(error.toString())),
     );
   }
+
+  void logout() async {
+    final result = await LoginService.logout();
+
+    result.fold(
+      (isLogged) {
+        emit(switch (isLogged) {
+          true => const LoginPageInitState(),
+          false => const LoginPageSuccessState(true),
+        });
+      },
+      (error) => emit(LoginPageErrorState(error.toString())),
+    );
+  }
 }

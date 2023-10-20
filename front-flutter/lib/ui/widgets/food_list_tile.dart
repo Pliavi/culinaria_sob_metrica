@@ -24,6 +24,11 @@ class FoodListTile extends StatelessWidget {
       child: ListTile(
         title: Text(food.name),
         subtitle: Text(food.place?.name ?? "No place"),
+        leading: CircleAvatar(
+          backgroundImage:
+              food.photo != null ? NetworkImage(food.photo!.url) : null,
+          child: food.photo == null ? const Icon(Icons.fastfood) : null,
+        ),
       ),
     );
   }

@@ -46,4 +46,19 @@ class LoginService {
 
     return (res.statusCode == HttpStatus.ok).toSuccess();
   }
+
+  static AsyncResult<bool, Exception> logout() async {
+    final res = await api.post("/logout");
+
+    if (res.statusCode != HttpStatus.ok) {
+      return false.toSuccess();
+    }
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('token');
+
+    api.options.headers["Authorization"] = "";
+
+    return true.toSuccess();
+  }
 }

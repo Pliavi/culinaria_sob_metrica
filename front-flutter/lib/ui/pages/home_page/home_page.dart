@@ -1,5 +1,6 @@
 import 'package:csm_front/ui/pages/home_page/home_page_cubit.dart';
 import 'package:csm_front/ui/pages/home_page/home_page_states.dart';
+import 'package:csm_front/ui/pages/login_page/login_page_cubit.dart';
 import 'package:csm_front/ui/widgets/food_list_tile.dart';
 import 'package:csm_front/ui/widgets/main_layout.dart';
 import 'package:flutter/material.dart';
@@ -21,11 +22,23 @@ class HomePage extends StatelessWidget {
           body: state.on(
             init: () => const Center(child: CircularProgressIndicator()),
             error: (state) => Center(child: Text(state.error)),
-            success: (state) => ListView.builder(
-              itemCount: state.foods.length,
-              itemBuilder: (context, index) => FoodListTile(
-                food: state.foods[index],
-              ),
+            success: (state) => Column(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<LoginPageCubit>().logout();
+                  },
+                  child: const Text("Logout"),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: state.foods.length,
+                    itemBuilder: (context, index) => FoodListTile(
+                      food: state.foods[index],
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         );
