@@ -37,7 +37,7 @@ export default class Review extends BaseModel {
   public user: BelongsTo<typeof User>
 
   @column({ serializeAs: null })
-  public foodId: string
+  public foodId: number
   @belongsTo(() => Food)
   public food: BelongsTo<typeof Food>
 
