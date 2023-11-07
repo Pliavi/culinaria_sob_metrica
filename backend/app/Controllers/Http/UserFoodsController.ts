@@ -7,6 +7,9 @@ import StoreFoodValidator from 'App/Validators/StoreFoodValidator'
 import { inject } from '@adonisjs/core/build/standalone'
 import { AttachmentService } from '@ioc:CSM/Services'
 import { FoodRepository, PhotoRepository, PlaceRepository } from '@ioc:CSM/Repositories'
+import Photo from 'App/Models/Photo'
+import Place from 'App/Models/Place'
+import User from 'App/Models/User'
 
 const foodStateEnum = ['reviewed', 'unreviewed', 'all'] as const
 type FoodState = (typeof foodStateEnum)[number]
@@ -20,7 +23,7 @@ export default class UserFoodsController {
       }),
     })
 
-    const userId = auth.user?.id
+    const userId = auth.user?.id ?? 1 // TODO: remove default value
     const foodState: FoodState = request.input('state')
 
     const foods = match(foodState)
@@ -35,7 +38,7 @@ export default class UserFoodsController {
   public async store({ request, auth }: HttpContextContract) {
     await request.validate(StoreFoodValidator)
 
-    const user = auth.user!
+    const user = auth.user ?? (await User.firstOrFail()) // TODO: remove default value
 
     let photoPath: string | undefined
 
@@ -43,11 +46,26 @@ export default class UserFoodsController {
       try {
         const foodData = request.except(['place', 'photo'])
         const placeData = request.input('place')
-        const photoFile = request.file('photo')!
+        delete foodData.id
 
-        photoPath = await AttachmentService.upload(photoFile)
-        const photo = await PhotoRepository.create(photoPath, { trx })
-        const place = await PlaceRepository.firstOrCreateByName(placeData, { trx })
+        let photo: Photo
+        if (request.file('photo') !== null && request.file('photo') !== undefined) {
+          const photoFile = request.file('photo')!
+          photoPath = await AttachmentService.upload(photoFile)
+          photo = await PhotoRepository.create(photoPath, { trx })
+        } else {
+          photo = await Photo.firstOrFail() // TODO: remove default
+        }
+
+        let place: Place
+        if (placeData !== undefined && placeData !== null) {
+          place = await PlaceRepository.firstOrCreateByName(placeData, { trx })
+        } else {
+          place = await Place.firstOrFail() // TODO: remove default
+        }
+
+        console.log(foodData)
+
         const food = await FoodRepository.create({ data: foodData, place, photo, user }, { trx })
 
         return food

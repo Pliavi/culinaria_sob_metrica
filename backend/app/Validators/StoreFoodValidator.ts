@@ -19,11 +19,12 @@ export default class StoreFoodValidator {
       },
       [rules.regex(/^[0-9]+(\.[0-9]{1,2})?$/)]
     ),
-    photo: schema.file({
+    photo: schema.file.optional({
       extnames: ['jpg', 'png', 'jpeg'],
       size: '5mb',
     }),
-    place: schema.object().members({
+    // TODO: remove optional
+    place: schema.object.optional().members({
       name: schema.string({}, [rules.requiredIfNotExists('place.id')]),
       id: schema.number([rules.requiredIfNotExists('place.name')]),
     }),

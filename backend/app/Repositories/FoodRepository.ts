@@ -33,16 +33,6 @@ export default class FoodRepository {
       }),
       { client: trx }
     )
-
-    return await Food.create(
-      {
-        ...data,
-        placeId: place.id,
-        photoId: photo.id,
-        userId: user.id,
-      },
-      { client: trx }
-    )
   }
 
   public getReviewedBy(userId: number) {
